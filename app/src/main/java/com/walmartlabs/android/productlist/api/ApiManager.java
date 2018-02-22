@@ -1,6 +1,7 @@
 package com.walmartlabs.android.productlist.api;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import com.walmartlabs.android.productlist.Constants;
 import java.lang.ref.SoftReference;
 
@@ -41,7 +42,9 @@ public enum ApiManager {
         this.apiUtils = apiUtils;
 
 
+    }
 
-
+    public SharedPreferences getSharedPrefs() {
+        return apiUtils.getSharedPreferences();
     }
 }

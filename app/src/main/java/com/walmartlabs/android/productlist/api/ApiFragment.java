@@ -1,5 +1,7 @@
 package com.walmartlabs.android.productlist.api;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,23 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.walmartlabs.android.productlist.Constants;
 import com.walmartlabs.android.productlist.TheApplication;
-import com.walmartlabs.android.productlist.api.retrofit_services.WalmartLabsRestServices;
 import com.walmartlabs.android.productlist.data.models.ProductsResponse;
 import com.walmartlabs.android.productlist.ui.product.ProductListContract;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.util.concurrent.CountDownLatch;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
-import static junit.framework.Assert.fail;
 
 public class ApiFragment extends Fragment {
 
+    private static final String TAG = ApiFragment.class.getSimpleName();
     private WeakReference<ProductListContract.View> reference;
 
     @Override
@@ -40,39 +33,47 @@ public class ApiFragment extends Fragment {
         return null;
     }
 
-    public void getProductList(int pageNumber,int pageSize,ProductListContract.View view) {
+    public void getProductList(int pageNumber, int pageSize,
+        WeakReference<ProductListContract.View> wr, final boolean isOnResume) {
         Log.d(TAG, "getProductList");
-        if(reference == null ) {
-            Log.d(TAG, "new weak ref");
-            reference = new WeakReference<ProductListContract.View>(view);
-        }
 
-           ApiManager apiManager = ((TheApplication)getActivity().getApplication()).getApiManager();
+        final ProductListContract.View view = wr.get();
 
-        Log.d(TAG, "apiManager=" + apiManager.toString());
+        Log.d(TAG, " ((Activity) view)=" + ((Activity) view).toString());
 
-            apiManager.getApi().getProducts(pageNumber, pageSize, new WalmartLabsApi.ProductListener() {
-                @Override
-                public void onFeedSuccess(final ProductsResponse theProductsResponse) {
-                    Log.d(TAG, "theProducts" + theProductsResponse.getProducts().size());
-                    if( reference != null) {
-                        Log.d(TAG, "reference is not null");
-                        ProductListContract.View v = reference.get();
-                        if( v != null) {
-                         v.onProductList(theProductsResponse);
-                        }
-                    }else {
-                        Log.d(TAG, "reference is  null");
+        final ApiManager apiManager =
+            ((TheApplication) ((Activity) view).getApplication()).getApiManager();
 
-                    }
-
+        apiManager.getApi().getProducts(pageNumber, pageSize, new WalmartLabsApi.ProductListener() {
+            @Override
+            public void onFeedSuccessFromOnResume(final ProductsResponse productsResponse) {
+                if (view != null) {
+                    storeEtag(productsResponse, apiManager);
+                    view.onProductListFromOnResume(productsResponse);
                 }
+            }
 
-                @Override
-                public void onFailure(final ApiError apiError) {
+            @Override
+            public void onFeedSuccess(final ProductsResponse productsResponse) {
+                Log.d(TAG, "theProducts" + productsResponse.getProducts().size());
 
+                if (view != null) {
+                    storeEtag(productsResponse, apiManager);
+                    view.onProductList(productsResponse);
                 }
-            });
+            }
 
+            @Override
+            public void onFailure(final ApiError apiError) {
+                view.onLoadingFailed(apiError);
+            }
+        });
+    }
+
+    private void storeEtag(final ProductsResponse productsResponse, final ApiManager apiManager) {
+        SharedPreferences.Editor editor = apiManager.getSharedPrefs().edit();
+        Log.d(TAG, "----saving etag=" + productsResponse.getEtag());
+        editor.putString("etag", productsResponse.getEtag());
+        editor.commit();
     }
 }

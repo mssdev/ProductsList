@@ -3,4 +3,6 @@ package com.walmartlabs.android.productlist;
 public class Constants {
     public static final String  BASE_URL = "https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/";
 
+    public static final String SAVE_STATE_PAGE_NUMBER = "save_state_page_number";
+    public static final String RECYCLER_VIEW_FIRST_VISIBILE_ITEM ="recycler_view_first_visible_item";
 }

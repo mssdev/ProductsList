@@ -36,6 +36,9 @@ public class WalmartLabsApi {
     }
 
     public interface ProductListener {
+
+        public void onFeedSuccessFromOnResume(ProductsResponse productsResponse);
+
         public void onFeedSuccess(ProductsResponse productsResponse);
         public void onFailure(ApiError apiError);
     }
@@ -53,7 +56,7 @@ public class WalmartLabsApi {
         }
         Log.d(TAG, "service");
 
-        Call<ProductsResponse> call = service.getProducts(pageNumber,pageSize);
+        Call<ProductsResponse> call = service.getProducts(apiUtils.getSharedPreferences().getString("etag",""),pageNumber,pageSize);
 
         Log.d(TAG, "call enqueue" + call.toString());
 
@@ -61,45 +64,49 @@ public class WalmartLabsApi {
              @Override
              public void onResponse(final Call<ProductsResponse> call,
                  final Response<ProductsResponse> response) {
-                 Log.d(TAG, "response is Successful="  + response.isSuccessful() + ",code=" + response.code());
 
 
-                 // i would put this into an Interceptor
-                 if( response.code() >= HttpURLConnection.HTTP_OK && response.code() < HttpURLConnection.HTTP_MULT_CHOICE) {
-                     Log.d(TAG, "in <>");
-                     final ProductsResponse productsResponse =  response.body();
+                     Log.d(TAG, "response is Successful=" + response.isSuccessful() + ",code=" + response.code());
 
-                     if( productsResponse == null) {
-                         Log.d(TAG, "productsREsponse is null");
+                     // i would put this into an Interceptor
+
+                     if (response.code() >= HttpURLConnection.HTTP_OK && response.code() < HttpURLConnection.HTTP_MULT_CHOICE) {
+                         Log.d(TAG, "in <>");
+                         final ProductsResponse productsResponse = response.body();
+
+
+                         if (productsResponse == null) {
+                             Log.d(TAG, "productsREsponse is null");
+                         }
+
+                         Log.d(TAG, "pro" + productsResponse.getPageNumber());
+                         Log.d(TAG, "pro" + productsResponse.getProducts().size());
+
+                         Log.d(TAG, "Thread=" + Thread.currentThread().getName());
+
+                         handler.post(new Runnable() {
+                             @Override
+                             public void run() {
+                                 Log.d(TAG, "in run() Thread=" + Thread.currentThread().getName());
+                                 Log.d(TAG, "onFeedSuccess");
+                                 if (listener == null) {
+                                     Log.d(TAG, "listener is null");
+                                 }
+                                 listener.onFeedSuccess(productsResponse);
+                             }
+                         });
+                     } else {
+                         Log.d(TAG, "Failure" + response.code());
+
+                         handler.post(new Runnable() {
+                             @Override
+                             public void run() {
+                                 listener.onFailure(new ApiError(Integer.valueOf(response.code()),
+                                     response.message(), false));
+                             }
+                         });
                      }
 
-                     Log.d(TAG, "pro" + productsResponse.getPageNumber());
-                     Log.d(TAG, "pro" + productsResponse.getProducts().size());
-
-
-
-                     handler.post(new Runnable() {
-                         @Override
-                         public void run() {
-                             Log.d(TAG, "onFeedSuccess");
-                             listener.onFeedSuccess(productsResponse);
-                         }
-                     });
-
-
-                 }else {
-                     Log.d(TAG,"Failure" + response.code());
-
-
-                     handler.post(new Runnable() {
-                         @Override
-                         public void run() {
-                             listener.onFailure(new ApiError(Integer.valueOf(response.code()),response.message(),false));
-                         }
-                     });
-
-
-                 }
              }
 
              @Override

@@ -10,26 +10,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.walmartlabs.android.productlist.R;
+import com.walmartlabs.android.productlist.data.models.Product;
 import com.walmartlabs.android.productlist.data.models.ProductsResponse;
 import com.walmartlabs.android.productlist.ui.DummyContent;
 import com.walmartlabs.android.productlist.ui.product_detail.ProductDetailActivity;
 import com.walmartlabs.android.productlist.ui.product_detail.ProductDetailFragment;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
+
 
 public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
+    private static final String TAG = SimpleItemRecyclerViewAdapter.class.getSimpleName();
     private final ProductListActivity mParentActivity;
-    private final List<DummyContent.DummyItem> mValues;
+    private final List<Product> mValues;
     private final boolean mTwoPane;
+    private int position;
     private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+            Product item = (Product) view.getTag();
             if (mTwoPane) {
                 Bundle arguments = new Bundle();
-                arguments.putString(ProductDetailFragment.ARG_ITEM_ID, item.id);
+                arguments.putString(ProductDetailFragment.ARG_ITEM_ID, item.getProductId());
                 ProductDetailFragment fragment = new ProductDetailFragment();
                 fragment.setArguments(arguments);
                 mParentActivity.getSupportFragmentManager()
@@ -39,14 +42,15 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
             } else {
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ProductDetailActivity.class);
-                intent.putExtra(ProductDetailFragment.ARG_ITEM_ID, item.id);
+                intent.putExtra(ProductDetailFragment.ARG_ITEM_ID, item.getProductId());
 
                 context.startActivity(intent);
             }
         }
     };
 
-    SimpleItemRecyclerViewAdapter(ProductListActivity parent, List<DummyContent.DummyItem> items,
+
+    SimpleItemRecyclerViewAdapter(ProductListActivity parent, List<Product> items,
         boolean twoPane) {
         mValues = items;
         mParentActivity = parent;
@@ -62,20 +66,31 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getProductId());
+        holder.mContentView.setText(mValues.get(position).getProductName());
 
         holder.itemView.setTag(mValues.get(position));
         holder.itemView.setOnClickListener(mOnClickListener);
+        this.position = position;
     }
 
+    public int getPosition() {
+        return position;
+    }
     @Override
     public int getItemCount() {
         return mValues.size();
     }
 
-    public synchronized void update(final ProductsResponse response) {
-        Log.d(TAG, "response" + response.getPageNumber());
+    public void update(final ProductsResponse response) {
+        int curSize = mValues.size();
+        mValues.addAll(response.getProducts());
+
+        if( mValues.size() <= 1) {
+            notifyDataSetChanged();
+        }else {
+            notifyItemRangeInserted(curSize, mValues.size() - 1);
+        }
 
     }
 
