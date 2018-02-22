@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="wm_yellow">#ffffc21f</color>
+    <color name="wm_white">#ffffffff</color>
+    <color name="wm_blue">#ff007dc3</color>
 </resources>

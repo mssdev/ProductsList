@@ -44,7 +44,7 @@ public class ApiUtils {
 
     public ApiUtils(String baseUrl,Context context) {
         this.baseUrl = baseUrl;
-        Log.d(TAG, "API UTILS CONTSTRUCTOR----------");
+
         retrofit =provideRetrofit(context);
         service = retrofit.create(WalmartLabsRestServices.class);
         this.context = context;
@@ -130,7 +130,7 @@ public class ApiUtils {
         builder.cache(cache).addInterceptor(provideOfflineCacheInterceptor());
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         builder.addInterceptor(interceptor);
 
@@ -163,67 +163,6 @@ public class ApiUtils {
     }
 
 
-
-        //public boolean isOnline() {
-        //
-        //    if (connectivityManager.getActiveNetworkInfo() == null) {
-        //        return false;
-        //    } else {
-        //        final boolean isConnected = connectivityManager.getActiveNetworkInfo().isConnected();
-        //
-        //        final boolean wifi = isOnWifi();
-        //
-        //        final boolean cell = isOnCell();
-        //
-        //        if (isConnected || wifi || cell) {
-        //
-        //            return true;
-        //        }
-        //        if (isConnected) {
-        //
-        //            return true;
-        //        }
-        //
-        //        return false;
-        //    }
-        //}
-        //
-        //public boolean isOnWifi() {
-        //    if (connectivityManager.getActiveNetworkInfo() == null) {
-        //        return false;
-        //    }
-        //    if (connectivityManager.getActiveNetworkInfo().isConnected()
-        //        && (connectivityManager.getActiveNetworkInfo().getType()
-        //        == ConnectivityManager.TYPE_WIFI
-        //        || connectivityManager.getActiveNetworkInfo().getType()
-        //        == ConnectivityManager.TYPE_WIMAX)) {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-        //
-        //public boolean isOnCell() {
-        //    if (isAirplaneModeOn()) {
-        //        return false;
-        //    }
-        //
-        //    if (connectivityManager.getActiveNetworkInfo() == null) {
-        //        return false;
-        //    }
-        //
-        //    if (connectivityManager.getActiveNetworkInfo().isConnected()
-        //        && (connectivityManager.getActiveNetworkInfo().getType()
-        //        == ConnectivityManager.TYPE_WIFI
-        //        || connectivityManager.getActiveNetworkInfo().getType()
-        //        == ConnectivityManager.TYPE_WIMAX)) {
-        //        return false;
-        //    }
-        //    if (connectivityManager.getActiveNetworkInfo() != null
-        //        && connectivityManager.getActiveNetworkInfo().isConnected()) {
-        //        return true;
-        //    }
-        //    return false;
-        //}
 
         @SuppressWarnings("deprecation")
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)

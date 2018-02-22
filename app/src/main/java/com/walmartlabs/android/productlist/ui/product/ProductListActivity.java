@@ -27,6 +27,7 @@ import com.walmartlabs.android.productlist.data.models.Product;
 import com.walmartlabs.android.productlist.data.models.ProductsResponse;
 import com.walmartlabs.android.productlist.ui.DummyContent;
 import com.walmartlabs.android.productlist.ui.EndlessRecyclerViewScrollListener;
+import com.walmartlabs.android.productlist.ui.widgets.DividerDecoratorItem;
 import com.walmartlabs.android.productlist.ui.widgets.ToastExt;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
         if (findViewById(R.id.product_detail_container) != null) {
             twoPane = true;
         }
-     
+
         apiManager = ((TheApplication)getApplication()).getApiManager();
 
 
@@ -102,6 +103,8 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
+        recyclerView.addItemDecoration(
+            new DividerDecoratorItem(this, R.drawable.list_separator));
         recyclerView.setAdapter(adapter);
         if( state != null) {
             linearLayoutManager.onRestoreInstanceState(state);

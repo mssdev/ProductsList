@@ -14,4 +14,32 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+
+
+
+    <style name="ProductListContainerStyle" parent="@android:style/Widget">
+
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+
+        <item name="android:clickable">true</item>
+        <item name="android:focusableInTouchMode">false</item>
+
+        <item name="android:background">@drawable/list_container_row_selector</item>
+
+    </style>
+
+    <style name="ProductListContainerStyle.TextStyle"
+        parent="@android:style/Widget.TextView">
+        <item name="android:textSize">15sp</item>
+        <item name="android:clickable">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">@drawable/list_text_selector</item>
+
+    </style>
+
 </resources>
