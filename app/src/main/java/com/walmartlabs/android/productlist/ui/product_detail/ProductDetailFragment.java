@@ -1,13 +1,16 @@
 package com.walmartlabs.android.productlist.ui.product_detail;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.TextView;
 import com.walmartlabs.android.productlist.Constants;
 import com.walmartlabs.android.productlist.R;
@@ -25,6 +28,7 @@ public class ProductDetailFragment extends Fragment {
 
     private Product product;
     private int currentPage;
+    private ViewPager pager;
 
     public ProductDetailFragment() {
     }
@@ -38,10 +42,10 @@ public class ProductDetailFragment extends Fragment {
             product = getArguments().getParcelable(Constants.ARG_CURRENT_PRODUCT);
             currentPage = getArguments().getInt(Constants.ARG_CURRENT_PAGE);
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(product.getProductName());
-            }
+            //CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            //if (appBarLayout != null) {
+            //    appBarLayout.setTitle(product.getProductName());
+            //}
         }
     }
 
@@ -49,10 +53,14 @@ public class ProductDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.product_detail, container, false);
 
+        pager = rootView.findViewById(R.id.pager);
+        pager.setAdapter(new DetailPagerAdapter(currentPage,getActivity().getSharedPreferences("data",
+            Context.MODE_PRIVATE),getResources(),getFragmentManager()));
+
         // Show the dummy content as text in a TextView.
-        if (product != null) {
-            ((TextView) rootView.findViewById(R.id.product_detail)).setText(Html.fromHtml(product.getLongDescription()));
-        }
+        //if (product != null) {
+        //    ((TextView) rootView.findViewById(R.id.product_detail)).setText(Html.fromHtml(product.getLongDescription()));
+        //}
 
         return rootView;
     }
