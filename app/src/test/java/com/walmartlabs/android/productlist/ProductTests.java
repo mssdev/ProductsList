@@ -23,12 +23,14 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.robolectric.shadows.ShadowLooper;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -77,7 +79,14 @@ public class ProductTests {
 
             assertNotNull(name + ", apiManager should not be null", apiManager);
 
-            apiManager.getApi(new ApiUtils(baseUrl)).getProducts(0, 20, new WalmartLabsApi.ProductListener() {
+
+            apiManager.getApi().getProducts(0, 20, new WalmartLabsApi.ProductListener() {
+                @Override
+                public void onFeedSuccessFromOnResume(final ProductsResponse theProductsResponse) {
+                    productsResponse = theProductsResponse;
+                    latch.countDown();
+                }
+
                 @Override
                 public void onFeedSuccess(final ProductsResponse theProductsResponse) {
 
@@ -92,6 +101,7 @@ public class ProductTests {
                     latch.countDown();
                 }
             });
+            ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             latch.await();
             assertNotNull(name + ", product list should not be null", productsResponse);
             assertTrue(name + ", product list size should be > 0" , productsResponse.getProducts().size() > 0);
@@ -110,7 +120,13 @@ public class ProductTests {
             productsResponse = null;
             latch = new CountDownLatch(1);
 
-            apiManager.getApi(new ApiUtils(baseUrl)).getProducts(nextPage, 20, new WalmartLabsApi.ProductListener() {
+            apiManager.getApi().getProducts(nextPage, 20, new WalmartLabsApi.ProductListener() {
+                @Override
+                public void onFeedSuccessFromOnResume(final ProductsResponse theProductsResponse) {
+                    productsResponse  = theProductsResponse;;
+                    latch.countDown();
+                }
+
                 @Override
                 public void onFeedSuccess(final ProductsResponse theProductsResponse) {
 
@@ -147,14 +163,24 @@ public class ProductTests {
 
         TheApplication application = (TheApplication) RuntimeEnvironment.application;
 
-        String baseUrl = "https://wrong_domain-test.appspot.com/_ah/api/walmart/v1/";
+
+
         try {
             latch = new CountDownLatch(1);
+
             ApiManager apiManager = application.getApiManager();
+
+            apiManager.init(new ApiUtils("https://wrong_url/",application.getApplicationContext()));
 
             assertNotNull(name + ", apiManager should not be null", apiManager);
 
-            apiManager.getApi(new ApiUtils(baseUrl)).getProducts(0, 20, new WalmartLabsApi.ProductListener() {
+            apiManager.getApi().getProducts(0, 20, new WalmartLabsApi.ProductListener() {
+                @Override
+                public void onFeedSuccessFromOnResume(final ProductsResponse productsResponse) {
+                    fail(name + " this should never happen, url is wrong");
+                    latch.countDown();
+                }
+
                 @Override
                 public void onFeedSuccess(final ProductsResponse theProductsResponse) {
                     fail(name + " this should never happen, url is wrong");
