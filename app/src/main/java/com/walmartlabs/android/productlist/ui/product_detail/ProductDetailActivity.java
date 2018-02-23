@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.text.BoringLayout;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -29,6 +31,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
+
+
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -42,6 +46,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             arguments.putParcelable(Constants.ARG_CURRENT_PRODUCT, getIntent().getParcelableExtra(Constants.ARG_CURRENT_PRODUCT));
             arguments.putInt(Constants.ARG_CURRENT_PAGE,getIntent().getIntExtra(Constants.ARG_CURRENT_PAGE,0));
             arguments.putInt(Constants.ARG_ADAPTER_POSITION, getIntent().getIntExtra(Constants.ARG_ADAPTER_POSITION,0));
+
             ProductDetailFragment fragment = new ProductDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

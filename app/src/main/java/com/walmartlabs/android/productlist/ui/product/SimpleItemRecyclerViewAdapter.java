@@ -60,7 +60,10 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
             holder.shortDescription.setText("");
         }
 
-        holder.price.setText(product.getPrice());
+        String price = product.getPrice();
+        if( price != null) {
+            holder.price.setText(product.getPrice());
+        }
         final String url = product.getProductImageUrl();
         Log.d("ronj", "url=" + url);
         if( url != null) {

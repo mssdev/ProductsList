@@ -73,6 +73,7 @@ public class NextFragment extends Fragment  {
     @BindView(R.id.price_tv) TextView priceTv;
     @BindView(R.id.product_long_description_tv) TextView longDescriptionTv;
 
+    private int screenWidth;
 
 
 
@@ -80,6 +81,7 @@ public class NextFragment extends Fragment  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         product = getArguments().getParcelable(Constants.ARG_CURRENT_PRODUCT);
+        screenWidth = getArguments().getInt(Constants.ARG_SCREEN_WIDTH);
     }
 
     @Override
@@ -96,15 +98,24 @@ public class NextFragment extends Fragment  {
 
         final String url = product.getProductImageUrl();
         Log.d("ronj", "url=" + url);
+
         if( url != null) {
-            Picasso.with(getActivity()).load(Uri.parse(url)).fit().into(productIv);
+            Picasso.with(getActivity()).load(Uri.parse(url)).centerInside().resize(screenWidth,screenWidth).into(productIv);
         }
 
 
-        productNameTv.setText(Html.fromHtml(product.getProductName()));
-        priceTv.setText(product.getPrice());
-        longDescriptionTv.setText(Html.fromHtml(product.getLongDescription()));
-
+        String productName = product.getProductName();
+        if( productName != null) {
+            productNameTv.setText(Html.fromHtml(product.getProductName()));
+        }
+        String price = product.getPrice();
+        if( price != null) {
+            priceTv.setText(product.getPrice());
+        }
+        String longDescription = product.getLongDescription();
+        if( longDescription != null) {
+            longDescriptionTv.setText(Html.fromHtml(product.getLongDescription()));
+        }
         return view;
     }
 

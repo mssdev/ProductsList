@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.walmartlabs.android.productlist.Constants;
@@ -38,10 +39,15 @@ public class DetailPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = DetailPagerAdapter.class.getSimpleName();
     private SharedPreferences prefs;
     private List<Product> productList;
-    public DetailPagerAdapter(int pageNumber,SharedPreferences prefs,Resources resources, FragmentManager fragmentManager) {
+    private int screenWidth ;
+    public DetailPagerAdapter(int pageNumber,
+        SharedPreferences prefs,
+        Resources resources,
+        FragmentManager fragmentManager) {
         super(fragmentManager);
         this.prefs = prefs;
         productList = loadProductList(pageNumber, prefs);
+        screenWidth = resources.getDisplayMetrics().widthPixels;
 
     }
 
@@ -62,6 +68,7 @@ public class DetailPagerAdapter extends FragmentPagerAdapter {
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.ARG_CURRENT_PRODUCT,product);
+        bundle.putInt(Constants.ARG_SCREEN_WIDTH,screenWidth);
 
         nextFragment.setArguments(bundle);
 

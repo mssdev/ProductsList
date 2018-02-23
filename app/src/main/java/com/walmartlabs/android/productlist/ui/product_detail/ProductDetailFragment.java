@@ -44,6 +44,7 @@ public class ProductDetailFragment extends Fragment {
             currentPage = getArguments().getInt(Constants.ARG_CURRENT_PAGE);
             adapterPosition = getArguments().getInt(Constants.ARG_ADAPTER_POSITION);
 
+
         }
     }
 
