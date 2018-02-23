@@ -22,8 +22,6 @@
         android:name="com.walmartlabs.android.productlist.ProductListFragment"
         android:layout_width="@dimen/item_width"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.walmartlabs.android.productlist.ui.product.ProductListActivity"
         tools:listitem="@layout/product_list_content"/>

@@ -1,20 +1,25 @@
 package com.walmartlabs.android.productlist.ui.product_detail;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
 import com.walmartlabs.android.productlist.Constants;
 import com.walmartlabs.android.productlist.R;
 import com.walmartlabs.android.productlist.data.models.Product;
@@ -62,8 +67,13 @@ public class NextFragment extends Fragment  {
 
 
     private Product product;
-    @BindView(R.id.product_detail)
-    TextView textView;
+
+    @BindView(R.id.product_iv) ImageView productIv;
+    @BindView(R.id.product_name_tv) TextView productNameTv;
+    @BindView(R.id.price_tv) TextView priceTv;
+    @BindView(R.id.product_long_description_tv) TextView longDescriptionTv;
+
+
 
 
     @Override
@@ -84,7 +94,16 @@ public class NextFragment extends Fragment  {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_next, null);
         ButterKnife.bind(this, view);
 
-        textView.setText(Html.fromHtml(product.getLongDescription()));
+        final String url = product.getProductImageUrl();
+        Log.d("ronj", "url=" + url);
+        if( url != null) {
+            Picasso.with(getActivity()).load(Uri.parse(url)).fit().into(productIv);
+        }
+
+
+        productNameTv.setText(Html.fromHtml(product.getProductName()));
+        priceTv.setText(product.getPrice());
+        longDescriptionTv.setText(Html.fromHtml(product.getLongDescription()));
 
         return view;
     }
