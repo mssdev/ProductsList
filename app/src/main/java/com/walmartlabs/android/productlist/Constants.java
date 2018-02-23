@@ -8,4 +8,5 @@ public class Constants {
 
     public static final String ARG_CURRENT_PAGE = "arg_current_page";
     public static final String ARG_CURRENT_PRODUCT = "arg_product";
+    public static final String ARG_ADAPTER_POSITION = "arg_adapter_position";
 }

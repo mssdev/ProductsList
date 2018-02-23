@@ -91,8 +91,8 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
         adapter = new SimpleItemRecyclerViewAdapter(this, new ArrayList<Product>(), new SimpleItemRecyclerViewAdapter.ClickListener() {
 
             @Override
-            public void onProductClicked(final Product product) {
-                handleProductClicked(product);
+            public void onProductClicked(final Product product, int position) {
+                handleProductClicked(product,position);
             }
         });
 
@@ -222,13 +222,15 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
 
     }
 
-    private void handleProductClicked(Product product) {
+    private void handleProductClicked(Product product,int position) {
 
 
         if (twoPane) {
             Bundle arguments = new Bundle();
             arguments.putInt(Constants.ARG_CURRENT_PAGE, pageNumber);
             arguments.putParcelable(Constants.ARG_CURRENT_PRODUCT, product);
+            arguments.putInt(Constants.ARG_ADAPTER_POSITION, position);
+
             ProductDetailFragment fragment = new ProductDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager()
@@ -240,6 +242,7 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
             Intent intent = new Intent(this, ProductDetailActivity.class);
             intent.putExtra(Constants.ARG_CURRENT_PRODUCT, product);
             intent.putExtra(Constants.ARG_CURRENT_PAGE, pageNumber);
+            intent.putExtra(Constants.ARG_ADAPTER_POSITION, position);
 
             startActivity(intent);
         }

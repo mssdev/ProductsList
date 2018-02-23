@@ -41,6 +41,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putParcelable(Constants.ARG_CURRENT_PRODUCT, getIntent().getParcelableExtra(Constants.ARG_CURRENT_PRODUCT));
             arguments.putInt(Constants.ARG_CURRENT_PAGE,getIntent().getIntExtra(Constants.ARG_CURRENT_PAGE,0));
+            arguments.putInt(Constants.ARG_ADAPTER_POSITION, getIntent().getIntExtra(Constants.ARG_ADAPTER_POSITION,0));
             ProductDetailFragment fragment = new ProductDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

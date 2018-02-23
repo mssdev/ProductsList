@@ -48,7 +48,7 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Product product = products.get(position);
 
@@ -71,7 +71,7 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                clickListener.onProductClicked(product);
+                clickListener.onProductClicked(product,position);
             }
         });
         this.position = position;
@@ -99,7 +99,7 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
 
 
     public interface ClickListener {
-        public void onProductClicked(Product product);
+        public void onProductClicked(Product product,int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

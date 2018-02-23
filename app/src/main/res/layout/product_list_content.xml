@@ -13,8 +13,17 @@
         android:layout_marginLeft="@dimen/product_list_image_margin"
         android:id="@+id/product_iv"/>
 
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/product_list_image_margin"
+        android:layout_marginEnd="@dimen/product_list_image_margin"
+        android:layout_marginRight="@dimen/product_list_image_margin"
+        android:layout_marginLeft="@dimen/product_list_image_margin"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
     <TextView
         android:layout_marginTop="10dp"
+
+
         android:id="@+id/product_name_tv"
         style="@style/ProductListContainerStyle.TextStyle"
         android:textStyle="bold"
@@ -36,4 +45,5 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:textSize="@dimen/list_text_size_product_subtext"/>
+    </LinearLayout>
 </LinearLayout>

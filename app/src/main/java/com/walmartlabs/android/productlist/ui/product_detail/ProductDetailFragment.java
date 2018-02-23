@@ -29,6 +29,7 @@ public class ProductDetailFragment extends Fragment {
     private Product product;
     private int currentPage;
     private ViewPager pager;
+    private int adapterPosition;
 
     public ProductDetailFragment() {
     }
@@ -41,11 +42,8 @@ public class ProductDetailFragment extends Fragment {
 
             product = getArguments().getParcelable(Constants.ARG_CURRENT_PRODUCT);
             currentPage = getArguments().getInt(Constants.ARG_CURRENT_PAGE);
-            Activity activity = this.getActivity();
-            //CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            //if (appBarLayout != null) {
-            //    appBarLayout.setTitle(product.getProductName());
-            //}
+            adapterPosition = getArguments().getInt(Constants.ARG_ADAPTER_POSITION);
+
         }
     }
 
@@ -56,11 +54,9 @@ public class ProductDetailFragment extends Fragment {
         pager = rootView.findViewById(R.id.pager);
         pager.setAdapter(new DetailPagerAdapter(currentPage,getActivity().getSharedPreferences("data",
             Context.MODE_PRIVATE),getResources(),getFragmentManager()));
+        pager.setCurrentItem(adapterPosition);
 
-        // Show the dummy content as text in a TextView.
-        //if (product != null) {
-        //    ((TextView) rootView.findViewById(R.id.product_detail)).setText(Html.fromHtml(product.getLongDescription()));
-        //}
+
 
         return rootView;
     }
