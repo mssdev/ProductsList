@@ -5,4 +5,7 @@ public class Constants {
 
     public static final String SAVE_STATE_PAGE_NUMBER = "save_state_page_number";
     public static final String RECYCLER_VIEW_FIRST_VISIBILE_ITEM ="recycler_view_first_visible_item";
+
+    public static final String ARG_CURRENT_PAGE = "arg_current_page";
+    public static final String ARG_CURRENT_PRODUCT = "arg_product";
 }

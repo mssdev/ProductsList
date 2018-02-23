@@ -1,6 +1,8 @@
 package com.walmartlabs.android.productlist.ui.product;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -27,6 +29,8 @@ import com.walmartlabs.android.productlist.data.models.Product;
 import com.walmartlabs.android.productlist.data.models.ProductsResponse;
 import com.walmartlabs.android.productlist.ui.DummyContent;
 import com.walmartlabs.android.productlist.ui.EndlessRecyclerViewScrollListener;
+import com.walmartlabs.android.productlist.ui.product_detail.ProductDetailActivity;
+import com.walmartlabs.android.productlist.ui.product_detail.ProductDetailFragment;
 import com.walmartlabs.android.productlist.ui.widgets.DividerDecoratorItem;
 import com.walmartlabs.android.productlist.ui.widgets.ToastExt;
 import java.lang.ref.WeakReference;
@@ -84,7 +88,13 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
         apiManager = ((TheApplication)getApplication()).getApiManager();
 
 
-        adapter = new SimpleItemRecyclerViewAdapter(this, new ArrayList<Product>(), twoPane);
+        adapter = new SimpleItemRecyclerViewAdapter(this, new ArrayList<Product>(), new SimpleItemRecyclerViewAdapter.ClickListener() {
+
+            @Override
+            public void onProductClicked(final Product product) {
+                handleProductClicked(product);
+            }
+        });
 
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -211,4 +221,31 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
             Toast.LENGTH_SHORT);
 
     }
+
+    private void handleProductClicked(Product product) {
+
+
+        if (twoPane) {
+            Bundle arguments = new Bundle();
+            arguments.putInt(Constants.ARG_CURRENT_PAGE, pageNumber);
+            arguments.putParcelable(Constants.ARG_CURRENT_PRODUCT, product);
+            ProductDetailFragment fragment = new ProductDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.product_detail_container, fragment)
+                .commit();
+        } else {
+
+            Intent intent = new Intent(this, ProductDetailActivity.class);
+            intent.putExtra(Constants.ARG_CURRENT_PRODUCT, product);
+            intent.putExtra(Constants.ARG_CURRENT_PAGE, pageNumber);
+
+            startActivity(intent);
+        }
+
+    }
+
+
+
 }

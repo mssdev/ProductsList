@@ -27,37 +27,17 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
     private static final String TAG = SimpleItemRecyclerViewAdapter.class.getSimpleName();
     private final ProductListActivity parentActivity;
     private final List<Product> products;
-    private final boolean twoPane;
-    private int position;
-    private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Product item = (Product) view.getTag();
-            if (twoPane) {
-                Bundle arguments = new Bundle();
-                arguments.putString(ProductDetailFragment.ARG_ITEM_ID, item.getProductId());
-                ProductDetailFragment fragment = new ProductDetailFragment();
-                fragment.setArguments(arguments);
-                parentActivity.getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.product_detail_container, fragment)
-                    .commit();
-            } else {
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ProductDetailActivity.class);
-                intent.putExtra(ProductDetailFragment.ARG_ITEM_ID, item.getProductId());
 
-                context.startActivity(intent);
-            }
-        }
-    };
+    private int position;
+    private ClickListener clickListener;
 
 
     SimpleItemRecyclerViewAdapter(ProductListActivity parentActivity, List<Product> products,
-        boolean twoPane) {
+        ClickListener clickListener) {
         this.products = products;
         this.parentActivity = parentActivity;
-        this.twoPane = twoPane;
+
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -88,7 +68,12 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
         }
 
         holder.itemView.setTag(product);
-        holder.itemView.setOnClickListener(mOnClickListener);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                clickListener.onProductClicked(product);
+            }
+        });
         this.position = position;
     }
 
@@ -110,6 +95,11 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
             notifyItemRangeInserted(curSize, products.size() - 1);
         }
 
+    }
+
+
+    public interface ClickListener {
+        public void onProductClicked(Product product);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.google.gson.Gson;
 import com.walmartlabs.android.productlist.TheApplication;
 import com.walmartlabs.android.productlist.data.models.ProductsResponse;
 import com.walmartlabs.android.productlist.ui.product.ProductListContract;
+
 import java.lang.ref.WeakReference;
 
 public class ApiFragment extends Fragment {
@@ -47,15 +49,19 @@ public class ApiFragment extends Fragment {
         apiManager.getApi().getProducts(pageNumber, pageSize, new WalmartLabsApi.ProductListener() {
             @Override
             public void onFeedSuccessFromOnResume(final ProductsResponse productsResponse) {
+                storeFeed(productsResponse, apiManager);
                 if (view != null) {
                     storeEtag(productsResponse, apiManager);
                     view.onProductListFromOnResume(productsResponse);
+
+
                 }
             }
 
             @Override
             public void onFeedSuccess(final ProductsResponse productsResponse) {
                 Log.d(TAG, "theProducts" + productsResponse.getProducts().size());
+                storeFeed(productsResponse, apiManager);
 
                 if (view != null) {
                     storeEtag(productsResponse, apiManager);
@@ -68,6 +74,15 @@ public class ApiFragment extends Fragment {
                 view.onLoadingFailed(apiError);
             }
         });
+    }
+
+    private void storeFeed(final ProductsResponse productsResponse, final ApiManager apiManager) {
+        Gson gson =new Gson();
+        String json = gson.toJson(productsResponse);
+
+        SharedPreferences.Editor editor = apiManager.getSharedPrefs().edit();
+        editor.putString("" + productsResponse.getPageNumber(),json);
+        editor.commit();
     }
 
     private void storeEtag(final ProductsResponse productsResponse, final ApiManager apiManager) {

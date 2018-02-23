@@ -5,6 +5,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.walmartlabs.android.productlist.api.ApiManager;
 import com.walmartlabs.android.productlist.api.ApiUtils;
 
+
 public class TheApplication extends Application {
 
     private ApiManager apiManager;
@@ -20,6 +21,7 @@ public class TheApplication extends Application {
 
         apiManager = ApiManager.INSTANCE;
         apiManager.init(new ApiUtils(Constants.BASE_URL,this));
+
     }
 
     /***
